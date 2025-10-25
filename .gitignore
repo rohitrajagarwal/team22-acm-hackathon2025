@@ -1,0 +1,60 @@
+# Node
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime / env
+.env
+.env.*.local
+.env.local
+
+# Build output
+dist/
+build/
+coverage/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary files
+*.swp
+*.tmp
+
+# SSH / keys / certs
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.ppk
+
+# Misc
+.cache/
+.parcel-cache/
+/.pnp/
+/.pnp.js
+
+# OS X
+.Spotlight-V100
+.Trashes
+
+# lock files (optional; if you want to keep them in repo, remove these lines)
+# package-lock.json
+# yarn.lock
