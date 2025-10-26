@@ -3,9 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React App</title>
+    <title>HighView Engage</title>
+    <!-- Poppins font (used for headings and UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        function handleCredentialResponse (response) {
+            // This is the ID token from Google
+            console.log("Encoded JWT ID token:", response.credential)
+            // You can decode the token to get the user's info:
+            const base64Url = response.credential.split('.')[1]
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+            const user = JSON.parse(atob(base64))
+            div = document.getElementById('main_container')
+            div.innerHTML += `<p>Welcome, ${user.name}!</p>`
+            console.log("User info:", user); alert(`Welcome, ${user.name}!`)
+        }
+	</script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root"> </div>
 </body>
 </html>
