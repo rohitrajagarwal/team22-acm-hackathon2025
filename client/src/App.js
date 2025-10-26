@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './components/home-page-components/HomePage';
 import AboutContainer from './components/about-components/AboutContainer';
 import SignInComponent from './components/signin-components/SignInComponent';
+import SingOutComponent from './components/signin-components/SignOutComponent';
 
 
 function App() {

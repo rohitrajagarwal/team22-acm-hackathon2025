@@ -1,15 +1,7 @@
 //import React, { useState, useEffect } from 'react';
 
 const MainContainer = () => {
-    const checkHealth = async () => {
-            try {
-                const response = await fetch('/api/health');
-                const data = await response.json();
-                alert(`Server status: ${data.status}`);
-            } catch (error) {
-                console.error('Error checking server health:', error);
-            }
-        };
+   
     return (
         <div className="main-container">
             <h1>Welcome to HighView Engage</h1>
