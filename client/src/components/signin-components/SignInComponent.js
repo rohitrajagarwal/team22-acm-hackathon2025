@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios'; // Make sure to install: npm install axios
+import MenuComponent from '../home-page-components/MenuComponent';
+import FooterComponent from '../home-page-components/FooterComponent';
 
 // --- IMPORTANT ---
 // Paste the Client ID you got from your Google Cloud Console
@@ -83,7 +85,7 @@ export default function SignInComponent() {
 
   return (
     <div className="main-container">
-      {/* <MenuComponent /> */}
+      { <MenuComponent /> }
       <div style={{ 
         display: 'flex', 
         flexDirection: 'column', 
@@ -111,7 +113,7 @@ export default function SignInComponent() {
           Sign in with Google
         </button>
       </div>
-      {/* <FooterComponent /> */}
+      { <FooterComponent /> }
     </div>
   );
 }
