@@ -7,14 +7,19 @@ const { Pool } = require('pg'); // PostgreSQL client
 
 // Create a new Postgres client pool
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  user: process.env.DB_USER ,
+  host: process.env.DB_HOST ,
+  password: process.env.DB_PASSWORD ,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME ,
+  ssl: { rejectUnauthorized: false }
 });
 
 // Initialize the Google OAuth2 client
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'postmessage' // This redirect_uri must match what the client uses
+  'postmessage' // Required for auth code client flow
 );
 
 // --- Main Handler Function ---
