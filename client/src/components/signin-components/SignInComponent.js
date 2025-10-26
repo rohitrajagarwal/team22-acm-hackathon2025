@@ -44,12 +44,23 @@ export default function SignInComponent() {
   }, []);
 
   return (
-    <div className="main-container">
+    
+    <>
       <MenuComponent />
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
-        <div id="g_id_signin"></div>
+      <div className="main-container">
+        {localStorage.getItem('user') ? (
+          <p>Welcome back, {JSON.parse(localStorage.getItem('user')).name}!</p>
+        ) : (
+          <>
+            <p>Please sign in to continue.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
+              <div id="g_id_signin"></div>
+            </div>
+          </>
+        )}
       </div>
       <FooterComponent />
-    </div>
+    </>
+
   );
 }
