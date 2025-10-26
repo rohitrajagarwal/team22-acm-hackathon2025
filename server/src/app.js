@@ -89,7 +89,7 @@ app.post('/api/viewmyregistrations', async (req, res) => {
 
     console.log('Registrations found:', registrationsResult.rows.length);
     return res.status(200).json({ registrations: registrationsResult.rows });
-    
+
   } catch (error) {
     console.error('Database error:', error);
     return res.status(500).json({ error: 'Internal Server Error', details: error.message });

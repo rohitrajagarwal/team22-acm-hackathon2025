@@ -58,32 +58,10 @@ exports.handleGoogleCallback = async (req, res) => {
     const first_name = profile.names[0].givenName;
     const last_name = profile.names[0].familyName;
 
-    // 3. Find or Create User in YOUR Database
-    let dbUser = await findOrCreateUser(google_id, email, first_name, last_name);
+    // 3. Find or Create User in YOUR Database (pass oAuth2Client)
+    let dbUser = await findOrCreateUser(google_id, email, first_name, last_name, oAuth2Client);
     const user_id = dbUser.user_id; // Your schema uses email as user_id
 
-    // 4. Determine Role & Get Courses (The Workaround)
-    const classroom = google.classroom({ version: 'v1', auth: oAuth2Client });
-    let userRole = 'student'; // Default to Student
-    let coursesResponse;
-
-    try {
-      // Try to list courses as a TEACHER
-      coursesResponse = await classroom.courses.list({ teacherId: 'me' });
-      userRole = 'faculty'; // If this succeeds, they are faculty
-    } catch (error) {
-      if (error.code === 403) {
-        // If 403, they are a STUDENT
-        userRole = 'student';
-        coursesResponse = await classroom.courses.list({ studentId: 'me' });
-      } else {
-        throw error; // A different, unexpected error occurred
-      }
-    }
-
-    // 5. Update User Role in DB
-    await pool.query('UPDATE Users SET role = $1 WHERE user_id = $2', [userRole, user_id]);
-    dbUser.role = userRole;
 
     // 6. Process Courses and Update Other Tables
     const courses = coursesResponse.data.courses || [];
@@ -112,7 +90,7 @@ exports.handleGoogleCallback = async (req, res) => {
 
   } catch (error) {
     console.error('Error during Google auth callback:', error);
-    res.status(500).send('Authentication failed.');
+    res.status(500).json({ error: 'Authentication failed', details: error.message });
   }
 };
 
@@ -122,7 +100,7 @@ exports.handleGoogleCallback = async (req, res) => {
  * Finds a user by their email (user_id). If they don't exist, creates them.
  * Updates their Google ID and name if they do exist.
  */
-async function findOrCreateUser(google_id, email, first_name, last_name) {
+async function findOrCreateUser(google_id, email, first_name, last_name, oAuth2Client) {
   const { rows } = await pool.query('SELECT * FROM Users WHERE user_id = $1', [email]);
 
   if (rows.length > 0) {
@@ -134,9 +112,23 @@ async function findOrCreateUser(google_id, email, first_name, last_name) {
     return rows[0];
   } else {
     // User doesn't exist, create them
+    // Determine role by checking if they're a teacher in any course
+    let userRole = 'student'; // Default
+
+    try {
+      const classroom = google.classroom({ version: 'v1', auth: oAuth2Client });
+      await classroom.courses.list({ teacherId: 'me', pageSize: 1 });
+      userRole = 'faculty'; // If we can list as teacher, they're faculty
+    } catch (error) {
+      if (error.code === 403) {
+        userRole = 'student'; // 403 means not a teacher
+      }
+      // For other errors, default to student
+    }
+
     const { rows: newRows } = await pool.query(
-      'INSERT INTO Users (user_id, google_id, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING *',
-      [email, google_id, first_name, last_name]
+      'INSERT INTO Users (user_id, google_id, first_name, last_name, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [email, google_id, first_name, last_name, userRole]
     );
     return newRows[0];
   }
@@ -148,7 +140,7 @@ async function findOrCreateUser(google_id, email, first_name, last_name) {
  */
 async function processCourse(course, user_id) {
   // 1. Find or Create Company
-  const company_name = parseCompanyFromDescription(course.description);
+  const company_name = course.description;
   const { rows: companyRows } = await pool.query(
     // 'ON CONFLICT' atomically inserts or does nothing if the company exists
     'INSERT INTO Companies (company_name) VALUES ($1) ON CONFLICT (company_name) DO UPDATE SET company_name = EXCLUDED.company_name RETURNING company_id',
