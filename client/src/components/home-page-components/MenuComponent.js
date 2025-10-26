@@ -45,14 +45,15 @@ const MenuComponent = () => {
 					<a href="/" className="menu-link">Home</a>
 					<a href="/about" className="menu-link">About Us</a>
 					{user ? (
-						<a href="/profile" className="menu-link">Profile</a>
+						<a href="/viewregistrations" className="menu-link">View my registrations</a>
 					) : (
-						<a href="/signin" className="menu-link">Sign In with Google</a>
+						<a href="/viewregistrations" className="menu-link">View my registrations</a>
 					)}
+					
 					{user ? (
-						<a href="/viewregistrations" className="menu-link">View my registrations</a>
+						<a href="/profile" className="menu-link">Sign Out</a>
 					) : (
-						<a href="/viewregistrations" className="menu-link">View my registrations</a>
+						<a href="/signin" className="menu-link">Sign In</a>
 					)}
 				</nav>
 			</div>

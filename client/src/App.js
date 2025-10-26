@@ -12,6 +12,9 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<AboutContainer />} />
       <Route path="/signin" element={<SignInComponent />} /> 
+      <Route path="/signout" element={<SingOutComponent />} />
+      <Route path="/viewregistrations" element={<HomePage />} />
+      <Route path="/profile" element={<HomePage />} />
     </Routes>
   );
 }
