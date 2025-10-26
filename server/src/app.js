@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const routes = require('./routes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 
 // Create a reusable connection pool with SSL
 const pool = new (require('pg')).Pool({
@@ -24,6 +26,7 @@ pool.on('error', (err) => {
 });
 
 app.use('/api', routes);
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Server is up. Use /api/health' });
